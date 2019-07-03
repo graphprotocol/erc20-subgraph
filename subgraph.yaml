@@ -1,0 +1,41 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - name: TokenRegistry
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      address: '0x0000000000000000000000000000000000000000'
+      abi: TokenRegistry
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      file: ./src/mappings/registry.ts
+      entities:
+        - Token
+      abis:
+        - name: TokenRegistry
+          file: ./abis/TokenRegistry.json
+      blockHandlers:
+        - handler: initRegistry
+    templates:
+      - name: ERC20Token
+        kind: ethereum/contract
+        network: mainnet
+        source:
+          abi: ERC20
+        mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.3
+          language: wasm/assemblyscript
+          file: ./src/mappings/erc20.ts
+          entities:
+            - TransferEvent
+          abis:
+            - name: ERC20
+              file: ./abis/ERC20.json
+          eventHandlers:
+            - event: Transfer(indexed address,indexed address,uint256)
+              handler: handleTransfer
