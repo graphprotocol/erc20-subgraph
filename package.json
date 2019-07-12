@@ -1,4 +1,28 @@
 {
-  "name": "erc20-subgraph",
-  "version": "0.1.0"
+  "name": "token-subgraph",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "codegen": "graph codegen",
+    "contracts:build": "truffle build",
+    "contracts:lint": "solhint contracts/**/*.sol",
+    "contracts:migrate": "truffle migrate --reset",
+    "subgraph:build": "graph build",
+    "subgraph:create:local": "graph create --node http://localhost:8020/ graphprotocol/token-subgraph",
+    "subgraph:deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ graphprotocol/token-subgraph",
+    "subgraph:deploy:local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 graphprotocol/token-subgraph",
+    "subgraph:remove:local": "graph remove --node http://localhost:8020/ graphprotocol/token-subgraph"
+  },
+  "dependencies": {
+    "openzeppelin-solidity": "^2.3.0"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "0.13.3",
+    "@graphprotocol/graph-ts": "0.13.0",
+    "dotenv": "^8.0.0",
+    "prettier": "1.18.2",
+    "solhint": "^2.1.0",
+    "truffle": "^5.0.27",
+    "truffle-hdwallet-provider": "^1.0.14"
+  }
 }

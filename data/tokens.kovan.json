@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Binance Coin",
+    "symbol": "BNB",
+    "address": "0x88fd8460f80693718625254cbe092690e4c3e309",
+    "decimals": 18,
+    "flags": ["detailed"]
+  },
+  {
+    "name": "MakerDAO Token",
+    "symbol": "MKR",
+    "address": "0x6052632c8f977edef616a31d67ce504fb474bb77",
+    "decimals": 18,
+    "flags": []
+  },
+  {
+    "name": "Basic Attention Token",
+    "symbol": "BAT",
+    "address": "0xec88a5050c63bb9e073afc78b3b9378d0eb53257",
+    "decimals": 18,
+    "flags": ["detailed"]
+  },
+  {
+    "name": "USD Coin",
+    "symbol": "USDC",
+    "address": "0x0fdb03df7cd3cc9d6831328acb8ac25d420543e5",
+    "decimals": 18,
+    "flags": ["detailed"]
+  },
+  {
+    "name": "Dai Stablecoin v1.0",
+    "symbol": "DAI",
+    "address": "0xa73a100a2694121635ffd18ef0ba8882ce7c8d15",
+    "decimals": 18,
+    "flags": []
+  }
+]

@@ -1,0 +1,78 @@
+#
+# Main entities
+#
+
+type Token @entity {
+  id: ID! # Token address is used as ID
+  " Token address "
+  address: Bytes!
+
+  #
+  # Token data (from contract)
+  #
+
+  " Number of decimals the token uses "
+  decimals: Int!
+
+  " Human-readable name of the token "
+  name: String!
+
+  " Symbol of the token "
+  symbol: String!
+
+  #
+  # Additinal data (from registry)
+  #
+
+  " Token description "
+  description: String
+
+  " Image URL "
+  imageUrl: String
+
+  #
+  # TODO: Summary information
+  #
+
+  # " Number of token holders "
+  # holderCount: BigInt!
+
+  # " Total token supply "
+  # totalSupply: BigDecimal!
+
+  # totalMinted: BigDecimal
+
+  # totalBurned: BigDecimal
+
+  # events: [TokenEvent!]! @derivedFrom(field: "token")
+}
+
+#
+# Events
+#
+
+interface TokenEvent {
+  id: ID! # Concatenation of block number and log ID
+  token: Bytes! # Used to derive relationships to Token
+  amount: BigInt!
+}
+
+type BurnEvent implements TokenEvent @entity {
+  id: ID!
+  token: Bytes!
+  amount: BigInt!
+}
+
+type MintEvent implements TokenEvent @entity {
+  id: ID!
+  token: Bytes!
+  amount: BigInt!
+}
+
+type TransferEvent implements TokenEvent @entity {
+  id: ID!
+  token: Bytes!
+  from: Bytes!
+  to: Bytes!
+  amount: BigInt!
+}
