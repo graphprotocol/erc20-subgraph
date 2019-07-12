@@ -6,7 +6,7 @@ dataSources:
     kind: ethereum/contract
     network: mainnet
     source:
-      address: '0x0000000000000000000000000000000000000000'
+      address: '0x7f751820be4b1e44464268c425af6095995e045a'
       abi: TokenRegistry
     mapping:
       kind: ethereum/events
@@ -18,10 +18,12 @@ dataSources:
       abis:
         - name: TokenRegistry
           file: ./abis/TokenRegistry.json
-      blockHandlers:
-        - handler: initRegistry
+      eventHandlers:
+        - event: 'Unknown(indexed bytes,indexed bytes)'
+          topic0: '0xa9e319c3b10db96c5cee4bc3ebffa9c5581f222f14a4deb0df7ec2088ccd0974'
+          handler: initRegistry
     templates:
-      - name: ERC20Token
+      - name: StandardToken
         kind: ethereum/contract
         network: mainnet
         source:
@@ -30,7 +32,7 @@ dataSources:
           kind: ethereum/events
           apiVersion: 0.0.3
           language: wasm/assemblyscript
-          file: ./src/mappings/erc20.ts
+          file: ./src/mappings/token.ts
           entities:
             - TransferEvent
           abis:
