@@ -3,7 +3,7 @@
 #
 
 type Token @entity {
-  id: ID!               # Token address is used as ID
+  id: ID! # Same as token address
 
   " Token address "
   address: Bytes!
@@ -45,7 +45,7 @@ type Token @entity {
 
   # totalBurned: BigDecimal
 
-  # events: [TokenEvent!]! @derivedFrom(field: "token")
+  events: [TokenEvent!]! @derivedFrom(field: "token")
 }
 
 
@@ -53,28 +53,63 @@ type Token @entity {
 # Events
 #
 
-interface TokenEvent {
-  id: ID!               # Concatenation of block number and log ID
-  token: Bytes!         # Used to derive relationships to Token
+interface TokenEvent @entity {
+  id: ID!
+  token: Token!
   amount: BigInt!
+  sender: Bytes!
 }
 
 type BurnEvent implements TokenEvent @entity {
   id: ID!
-  token: Bytes!
+
+  " Token address "
+  token: Token!
+
+  " Quantity of tokens nurned "
   amount: BigInt!
+
+  " Transaction sender address"
+  sender: Bytes!
+
+  " Address of burner account "
+  burner: Bytes!
 }
 
 type MintEvent implements TokenEvent @entity {
   id: ID!
-  token: Bytes!
+
+  " Token address "
+  token: Token!
+
+  " Quantity of tokens minted "
   amount: BigInt!
+
+  " Transaction sender address"
+  sender: Bytes!
+
+  " Address of minter account "
+  minter: Bytes!
+
+  " Address of destination account "
+  destination: Bytes!
 }
 
 type TransferEvent implements TokenEvent @entity {
   id: ID!
-  token: Bytes!
-  from: Bytes!
-  to: Bytes!
+
+  " Token address "
+  token: Token!
+
+  " Quantity of tokens transferred "
   amount: BigInt!
+
+  " Transaction sender address"
+  sender: Bytes!
+
+  " Address of source account "
+  source: Bytes!
+
+  " Address of destination account "
+  destination: Bytes!
 }
