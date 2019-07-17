@@ -2,12 +2,12 @@ import { Address, JSONValue, Value, log, ipfs } from '@graphprotocol/graph-ts'
 
 import { Token } from '../../generated/schema'
 import { Unknown } from '../../generated/TokenRegistry/TokenRegistry'
-import { StandardToken } from '../../generated/TokenRegistry/templates'
+import { BurnableToken, MintableToken, StandardToken } from '../../generated/TokenRegistry/templates'
 
 let REGISTRY_HASH = 'QmXuhRkxh7y6Gi1ZR8rEUWthcdKNWNbiEMpwzWpnMCRX6E'
 
 export function initRegistry(event: Unknown): void {
-  log.warning('Initializing token registry, block={}', [event.block.number.toString()])
+  log.debug('Initializing token registry, block={}', [event.block.number.toString()])
 
   ipfs.mapJSON(REGISTRY_HASH, 'createToken', Value.fromString(''))
 }
@@ -47,6 +47,8 @@ export function createToken(value: JSONValue, userData: Value): void {
 
     // Start indexing token events
     StandardToken.create(address)
+    BurnableToken.create(address)
+    MintableToken.create(address)
   } else {
     log.warning('Token {} already in registry', [address.toHex()])
   }
