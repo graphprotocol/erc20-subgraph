@@ -41,16 +41,22 @@ type Token @entity {
   events: [TokenEvent!]! @derivedFrom(field: "token")
 }
 
-
 #
 # Events
 #
 
 interface TokenEvent @entity {
   id: ID!
+
+  # Information about to event itself
   token: Token!
   amount: BigInt!
   sender: Bytes!
+
+  # Information about block and transaction
+  block: BigInt!
+  transaction: Bytes!
+  timestamp: BigInt!
 }
 
 type BurnEvent implements TokenEvent @entity {
@@ -67,6 +73,15 @@ type BurnEvent implements TokenEvent @entity {
 
   " Address of burner account "
   burner: Bytes!
+
+  " Block number "
+  block: BigInt!
+
+  " Transaction hash "
+  transaction: Bytes!
+
+  " Event timestamp "
+  timestamp: BigInt!
 }
 
 type MintEvent implements TokenEvent @entity {
@@ -86,6 +101,15 @@ type MintEvent implements TokenEvent @entity {
 
   " Address of destination account "
   destination: Bytes!
+
+  " Block number "
+  block: BigInt!
+
+  " Transaction hash "
+  transaction: Bytes!
+
+  " Event timestamp "
+  timestamp: BigInt!
 }
 
 type TransferEvent implements TokenEvent @entity {
@@ -105,4 +129,13 @@ type TransferEvent implements TokenEvent @entity {
 
   " Address of destination account "
   destination: Bytes!
+
+  " Block number "
+  block: BigInt!
+
+  " Transaction hash "
+  transaction: Bytes!
+
+  " Event timestamp "
+  timestamp: BigInt!
 }
