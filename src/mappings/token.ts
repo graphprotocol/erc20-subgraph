@@ -16,6 +16,10 @@ export function handleTransfer(event: Transfer): void {
   entity.source = event.params.from
   entity.destination = event.params.to
 
+  entity.block = event.block.number
+  entity.transaction = event.transaction.hash
+  entity.timestamp = event.block.timestamp
+
   entity.save()
 }
 
@@ -27,6 +31,10 @@ export function handleBurn(event: Burn): void {
   entity.amount = event.params.value
   entity.sender = event.transaction.from
   entity.burner = event.params.burner
+
+  entity.block = event.block.number
+  entity.transaction = event.transaction.hash
+  entity.timestamp = event.block.timestamp
 
   entity.save()
 }
@@ -40,6 +48,10 @@ export function handleMint(event: Mint): void {
   entity.sender = event.transaction.from
   entity.destination = event.params.to
   entity.minter = event.transaction.from
+
+  entity.block = event.block.number
+  entity.transaction = event.transaction.hash
+  entity.timestamp = event.block.timestamp
 
   entity.save()
 }
