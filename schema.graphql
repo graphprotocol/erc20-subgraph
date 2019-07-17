@@ -8,10 +8,6 @@ type Token @entity {
   " Token address "
   address: Bytes!
 
-  #
-  # Token data (from contract)
-  #
-
   " Number of decimals the token uses "
   decimals: Int!
 
@@ -21,28 +17,25 @@ type Token @entity {
   " Symbol of the token "
   symbol: String!
 
-  #
-  # Additinal data (from registry)
-  #
-
   " Token description "
   description: String
 
   " Image URL "
   imageUrl: String
 
-  #
-  # TODO: Summary information
-  #
+  " Token flags"
+  flags: [String!]!
 
-  # " Number of token holders "
+  # TODO: Number of token holders
   # holderCount: BigInt!
 
-  # " Total token supply "
+  # TODO: Total token supply
   # totalSupply: BigDecimal!
 
+  # TODO:
   # totalMinted: BigDecimal
 
+  # TODO:
   # totalBurned: BigDecimal
 
   events: [TokenEvent!]! @derivedFrom(field: "token")
@@ -69,7 +62,7 @@ type BurnEvent implements TokenEvent @entity {
   " Quantity of tokens nurned "
   amount: BigInt!
 
-  " Transaction sender address"
+  " Transaction sender address "
   sender: Bytes!
 
   " Address of burner account "
@@ -85,7 +78,7 @@ type MintEvent implements TokenEvent @entity {
   " Quantity of tokens minted "
   amount: BigInt!
 
-  " Transaction sender address"
+  " Transaction sender address "
   sender: Bytes!
 
   " Address of minter account "
@@ -104,7 +97,7 @@ type TransferEvent implements TokenEvent @entity {
   " Quantity of tokens transferred "
   amount: BigInt!
 
-  " Transaction sender address"
+  " Transaction sender address "
   sender: Bytes!
 
   " Address of source account "
