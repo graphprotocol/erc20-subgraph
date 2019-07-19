@@ -50,7 +50,7 @@ interface TokenEvent @entity {
 
   # Information about to event itself
   token: Token!
-  amount: BigInt!
+  amount: BigDecimal!
   sender: Bytes!
 
   # Information about block and transaction
@@ -65,8 +65,8 @@ type BurnEvent implements TokenEvent @entity {
   " Token address "
   token: Token!
 
-  " Quantity of tokens nurned "
-  amount: BigInt!
+  " Quantity of tokens burned "
+  amount: BigDecimal!
 
   " Transaction sender address "
   sender: Bytes!
@@ -91,7 +91,7 @@ type MintEvent implements TokenEvent @entity {
   token: Token!
 
   " Quantity of tokens minted "
-  amount: BigInt!
+  amount: BigDecimal!
 
   " Transaction sender address "
   sender: Bytes!
@@ -119,7 +119,7 @@ type TransferEvent implements TokenEvent @entity {
   token: Token!
 
   " Quantity of tokens transferred "
-  amount: BigInt!
+  amount: BigDecimal!
 
   " Transaction sender address "
   sender: Bytes!

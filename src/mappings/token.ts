@@ -1,4 +1,4 @@
-import { log } from '@graphprotocol/graph-ts'
+import { BigInt, BigDecimal, log } from '@graphprotocol/graph-ts'
 
 import * as schema from '../../generated/schema'
 
@@ -7,11 +7,11 @@ import { Burn } from '../../generated/TokenRegistry/templates/BurnableToken/Burn
 import { Mint } from '../../generated/TokenRegistry/templates/MintableToken/Mintable'
 
 export function handleTransfer(event: Transfer): void {
-  log.debug('Handling token transfer, address={}', [event.address.toHex()])
+  let token = schema.Token.load(event.address.toHex())
 
   let entity = new schema.TransferEvent(event.transaction.hash.toHex() + '-' + event.logIndex.toString())
   entity.token = event.address.toHex()
-  entity.amount = event.params.value
+  entity.amount = toDecimal(event.params.value, token.decimals)
   entity.sender = event.params.from
   entity.source = event.params.from
   entity.destination = event.params.to
@@ -24,11 +24,11 @@ export function handleTransfer(event: Transfer): void {
 }
 
 export function handleBurn(event: Burn): void {
-  log.debug('Handling token burn, address={}', [event.address.toHex()])
+  let token = schema.Token.load(event.address.toHex())
 
   let entity = new schema.BurnEvent(event.transaction.hash.toHex() + '-' + event.logIndex.toString())
   entity.token = event.address.toHex()
-  entity.amount = event.params.value
+  entity.amount = toDecimal(event.params.value, token.decimals)
   entity.sender = event.transaction.from
   entity.burner = event.params.burner
 
@@ -40,11 +40,11 @@ export function handleBurn(event: Burn): void {
 }
 
 export function handleMint(event: Mint): void {
-  log.debug('Handling token mint, address={}', [event.address.toHex()])
+  let token = schema.Token.load(event.address.toHex())
 
   let entity = new schema.MintEvent(event.transaction.hash.toHex() + '-' + event.logIndex.toString())
   entity.token = event.address.toHex()
-  entity.amount = event.params.amount
+  entity.amount = toDecimal(event.params.amount, token.decimals)
   entity.sender = event.transaction.from
   entity.destination = event.params.to
   entity.minter = event.transaction.from
@@ -54,4 +54,12 @@ export function handleMint(event: Mint): void {
   entity.timestamp = event.block.timestamp
 
   entity.save()
+}
+
+function toDecimal(value: BigInt, decimals: u32): BigDecimal {
+  let precision = BigInt.fromI32(10)
+    .pow(<u8>decimals)
+    .toBigDecimal()
+
+  return value.divDecimal(precision)
 }
