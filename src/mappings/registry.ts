@@ -1,6 +1,6 @@
 import { Address, JSONValue, Value, log, ipfs } from '@graphprotocol/graph-ts'
 
-import { Token } from '../../generated/schema'
+import * as schema from '../../generated/schema'
 import { Unknown } from '../../generated/TokenRegistry/TokenRegistry'
 import { BurnableToken, MintableToken, StandardToken } from '../../generated/TokenRegistry/templates'
 
@@ -27,10 +27,10 @@ export function createToken(value: JSONValue, userData: Value): void {
   if (address) {
     let contractAddress = Address.fromString(address)
 
-    let token = Token.load(contractAddress.toHex())
+    let token = schema.Token.load(contractAddress.toHex())
 
     if (!token) {
-      token = new Token(contractAddress.toHex())
+      token = new schema.Token(contractAddress.toHex())
       token.address = contractAddress
       token.name = name
       token.symbol = symbol
@@ -83,14 +83,17 @@ function decodeFlags(value: u64): string[] {
   return flags
 }
 
+// If token implements optional ERC20 fields
 function isDetailed(flags: u64): boolean {
   return (flags & (2 << 0)) != 0
 }
 
+// If token can be irreversibly destroyed
 function isBurnable(flags: u64): boolean {
   return (flags & (2 << 1)) != 0
 }
 
+// If token can be created or minted
 function isMintable(flags: u64): boolean {
   return (flags & (2 << 3)) != 0
 }
