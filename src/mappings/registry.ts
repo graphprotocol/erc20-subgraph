@@ -1,6 +1,6 @@
 import { Address, JSONValue, Value, log, ipfs } from '@graphprotocol/graph-ts'
 
-import * as schema from '../../generated/schema'
+import { Token } from '../../generated/schema'
 import { Unknown } from '../../generated/TokenRegistry/TokenRegistry'
 import { BurnableToken, MintableToken, StandardToken } from '../../generated/TokenRegistry/templates'
 
@@ -27,10 +27,10 @@ export function createToken(value: JSONValue, userData: Value): void {
   if (address) {
     let contractAddress = Address.fromString(address)
 
-    let token = schema.Token.load(contractAddress.toHex())
+    let token = Token.load(contractAddress.toHex())
 
     if (!token) {
-      token = new schema.Token(contractAddress.toHex())
+      token = new Token(contractAddress.toHex())
       token.address = contractAddress
       token.name = name
       token.symbol = symbol
