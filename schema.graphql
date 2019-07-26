@@ -2,8 +2,21 @@
 # Main entities
 #
 
+type Account @entity {
+  id: ID!
+  address: Bytes!
+}
+
+type AccountBalance @entity {
+  id: ID!
+  account: Account!
+  token: Token!
+  amount: BigDecimal!
+  # TODO: timestamp: BigInt
+}
+
 type Token @entity {
-  id: ID! # Same as token address
+  id: ID!
 
   " Token address "
   address: Bytes!
