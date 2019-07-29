@@ -79,19 +79,12 @@ type Token @entity {
 
 interface TokenEvent @entity {
   id: ID!
-
-  # Information about to event itself
   token: Token!
   amount: BigDecimal!
   sender: Bytes!
-
-  # Information about block and transaction
-  block: BigInt!
-  transaction: Bytes!
-  timestamp: BigInt!
 }
 
-type BurnEvent implements TokenEvent @entity {
+type BurnEvent implements EthereumMetadata & TokenEvent @entity {
   id: ID!
 
   " Token address "
@@ -116,7 +109,7 @@ type BurnEvent implements TokenEvent @entity {
   timestamp: BigInt!
 }
 
-type MintEvent implements TokenEvent @entity {
+type MintEvent implements EthereumMetadata & TokenEvent @entity {
   id: ID!
 
   " Token address "
@@ -144,7 +137,7 @@ type MintEvent implements TokenEvent @entity {
   timestamp: BigInt!
 }
 
-type TransferEvent implements TokenEvent @entity {
+type TransferEvent implements EthereumMetadata & TokenEvent @entity {
   id: ID!
 
   " Token address "
