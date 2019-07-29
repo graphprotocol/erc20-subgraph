@@ -2,6 +2,12 @@
 # Main entities
 #
 
+interface EthereumMetadata {
+  block: BigInt!
+  transaction: Bytes!
+  timestamp: BigInt!
+}
+
 type Account @entity {
   id: ID!
   address: Bytes!
@@ -12,7 +18,20 @@ type AccountBalance @entity {
   account: Account!
   token: Token!
   amount: BigDecimal!
-  # TODO: timestamp: BigInt
+}
+
+# This entity is used to provide information about evolution of account balances
+type AccountBalanceLog implements EthereumMetadata @entity {
+  id: ID!
+  account: Account!
+  token: Token!
+  amount: BigDecimal!
+
+  event: TokenEvent
+
+  block: BigInt!
+  transaction: Bytes!
+  timestamp: BigInt!
 }
 
 type Token @entity {

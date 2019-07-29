@@ -1,6 +1,19 @@
-import { BigDecimal, BigInt, Bytes } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
 
-import { Account, AccountBalance, Token } from '../../generated/schema'
+import { Account, AccountBalance, AccountBalanceLog, Token } from '../../generated/schema'
+
+export function createAccountBalance(balance: AccountBalance, event: EthereumEvent): AccountBalanceLog {
+  let logEntity = new AccountBalanceLog(event.transaction.hash.toHex() + '-' + event.logIndex.toString())
+  logEntity.account = balance.account
+  logEntity.token = balance.token
+  logEntity.amount = balance.amount
+
+  logEntity.block = event.block.number
+  logEntity.transaction = event.transaction.hash
+  logEntity.timestamp = event.block.timestamp
+
+  return logEntity
+}
 
 export function getOrCreateAccount(accountAddress: Bytes): Account {
   let accountId = accountAddress.toHex()
@@ -35,7 +48,6 @@ export function getOrCreateAccountBalance(account: Account, token: Token): Accou
 export function increaseAccountBalance(account: Account, token: Token, amount: BigDecimal): AccountBalance {
   let balance = getOrCreateAccountBalance(account, token)
   balance.amount = balance.amount.plus(amount)
-  // TODO: balance.updated = timestamp
 
   return balance
 }
@@ -43,7 +55,6 @@ export function increaseAccountBalance(account: Account, token: Token, amount: B
 export function decreaseAccountBalance(account: Account, token: Token, amount: BigDecimal): AccountBalance {
   let balance = getOrCreateAccountBalance(account, token)
   balance.amount = balance.amount.minus(amount)
-  // TODO: balance.updated = timestamp
 
   return balance
 }

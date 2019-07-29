@@ -24,12 +24,13 @@ export function createToken(value: JSONValue, userData: Value): void {
   let imageUrl: string | null = rawData[5].isNull() ? null : rawData[5].toString()
   let flags: u64 = rawData[6].isNull() ? 0 : rawData[6].toU64()
 
-  if (address) {
+  if (address != null) {
     let contractAddress = Address.fromString(address)
 
+    // Persist token data if it doesn't already exist
     let token = Token.load(contractAddress.toHex())
 
-    if (!token) {
+    if (token == null) {
       token = new Token(contractAddress.toHex())
       token.address = contractAddress
       token.name = name

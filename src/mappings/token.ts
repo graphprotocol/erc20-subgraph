@@ -6,7 +6,7 @@ import { Mint } from '../../generated/TokenRegistry/templates/MintableToken/Mint
 
 import { Account, BurnEvent, MintEvent, Token, TransferEvent } from '../../generated/schema'
 
-import { getOrCreateAccount, decreaseAccountBalance, increaseAccountBalance } from './account'
+import { getOrCreateAccount, decreaseAccountBalance, increaseAccountBalance, createAccountBalance } from './account'
 
 const GENESIS_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -21,19 +21,23 @@ export function handleTransfer(event: Transfer): void {
     let isTransfer = !(isBurn || isMint)
 
     // Update token event logs
+    let eventEntityId: string
+
     if (isBurn) {
       let eventEntity = createBurnEvent(event, amount, event.params.from)
       eventEntity.save()
-    }
 
-    if (isMint) {
+      eventEntityId = eventEntity.id
+    } else if (isMint) {
       let eventEntity = createMintEvent(event, amount, event.params.to)
       eventEntity.save()
-    }
 
-    if (isTransfer) {
+      eventEntityId = eventEntity.id
+    } else if (isTransfer) {
       let eventEntity = createTransferEvent(event, amount, event.params.from, event.params.to)
       eventEntity.save()
+
+      eventEntityId = eventEntity.id
     }
 
     // Updates balances of accounts
@@ -43,6 +47,12 @@ export function handleTransfer(event: Transfer): void {
 
       sourceAccount.save()
       accountBalance.save()
+
+      // To provide information about evolution of account balance
+      let accountBalanceLog = createAccountBalance(accountBalance, event)
+      accountBalanceLog.event = eventEntityId
+
+      accountBalanceLog.save()
     }
 
     if (isTransfer || isMint) {
@@ -51,6 +61,12 @@ export function handleTransfer(event: Transfer): void {
 
       destinationAccount.save()
       accountBalance.save()
+
+      // To provide information about evolution of account balance
+      let accountBalanceLog = createAccountBalance(accountBalance, event)
+      accountBalanceLog.event = eventEntityId
+
+      accountBalanceLog.save()
     }
   }
 }
@@ -71,6 +87,12 @@ export function handleBurn(event: Burn): void {
 
     let accountBalance = decreaseAccountBalance(account, token as Token, amount)
     accountBalance.save()
+
+    // To provide information about evolution of account balance
+    let accountBalanceLog = createAccountBalance(accountBalance, event)
+    accountBalanceLog.event = eventEntity.id
+
+    accountBalanceLog.save()
   }
 }
 
@@ -90,6 +112,12 @@ export function handleMint(event: Mint): void {
 
     let accountBalance = increaseAccountBalance(account, token as Token, amount)
     accountBalance.save()
+
+    // To provide information about evolution of account balance
+    let accountBalanceLog = createAccountBalance(accountBalance, event)
+    accountBalanceLog.event = eventEntity.id
+
+    accountBalanceLog.save()
   }
 }
 
