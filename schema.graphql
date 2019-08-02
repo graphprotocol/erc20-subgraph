@@ -2,12 +2,6 @@
 # Main entities
 #
 
-interface EthereumMetadata {
-  block: BigInt!
-  transaction: Bytes!
-  timestamp: BigInt!
-}
-
 type Account @entity {
   id: ID!
   address: Bytes!
@@ -21,7 +15,7 @@ type AccountBalance @entity {
 }
 
 # This entity is used to provide information about evolution of account balances
-type AccountBalanceLog implements EthereumMetadata @entity {
+type AccountBalanceLog @entity {
   id: ID!
   account: Account!
   token: Token!
@@ -84,7 +78,7 @@ interface TokenEvent @entity {
   sender: Bytes!
 }
 
-type BurnEvent implements EthereumMetadata & TokenEvent @entity {
+type BurnEvent implements TokenEvent @entity {
   id: ID!
 
   " Token address "
@@ -109,7 +103,7 @@ type BurnEvent implements EthereumMetadata & TokenEvent @entity {
   timestamp: BigInt!
 }
 
-type MintEvent implements EthereumMetadata & TokenEvent @entity {
+type MintEvent implements TokenEvent @entity {
   id: ID!
 
   " Token address "
@@ -137,7 +131,7 @@ type MintEvent implements EthereumMetadata & TokenEvent @entity {
   timestamp: BigInt!
 }
 
-type TransferEvent implements EthereumMetadata & TokenEvent @entity {
+type TransferEvent implements TokenEvent @entity {
   id: ID!
 
   " Token address "

@@ -4,8 +4,8 @@ import { Token } from '../../generated/schema'
 import { Unknown } from '../../generated/TokenRegistry/TokenRegistry'
 import { BurnableToken, MintableToken, StandardToken } from '../../generated/TokenRegistry/templates'
 
-const DEFAULT_DECIMALS = 18
-const REGISTRY_HASH = 'QmUZ732EtRbQSXWGDtHwnQF68vbn1EGq1czapr4EYFpWDJ'
+import { REGISTRY_HASH } from '../config'
+import { decodeFlags, DEFAULT_DECIMALS, isBurnable, isMintable } from '../helpers/tokens'
 
 export function initRegistry(event: Unknown): void {
   log.debug('Initializing token registry, block={}', [event.block.number.toString()])
@@ -22,7 +22,7 @@ export function createToken(value: JSONValue, userData: Value): void {
   let decimals: u32 = rawData[3].isNull() ? DEFAULT_DECIMALS : rawData[3].toBigInt().toI32()
   let description: string | null = rawData[4].isNull() ? null : rawData[4].toString()
   let imageUrl: string | null = rawData[5].isNull() ? null : rawData[5].toString()
-  let flags: u64 = rawData[6].isNull() ? 0 : rawData[6].toU64()
+  let flags: u16 = rawData[6].isNull() ? 0 : (rawData[6].toU64() as u16)
 
   if (address != null) {
     let contractAddress = Address.fromString(address)
@@ -64,37 +64,4 @@ export function createToken(value: JSONValue, userData: Value): void {
       log.warning('Token {} already in registry', [contractAddress.toHex()])
     }
   }
-}
-
-function decodeFlags(value: u64): string[] {
-  let flags: string[] = []
-
-  if (isDetailed(value)) {
-    flags.push('detailed')
-  }
-
-  if (isBurnable(value)) {
-    flags.push('burnable')
-  }
-
-  if (isMintable(value)) {
-    flags.push('mintable')
-  }
-
-  return flags
-}
-
-// If token implements optional ERC20 fields
-function isDetailed(flags: u64): boolean {
-  return (flags & (2 << 0)) != 0
-}
-
-// If token can be irreversibly destroyed
-function isBurnable(flags: u64): boolean {
-  return (flags & (2 << 1)) != 0
-}
-
-// If token can be created or minted
-function isMintable(flags: u64): boolean {
-  return (flags & (2 << 3)) != 0
 }
