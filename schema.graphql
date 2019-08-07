@@ -76,6 +76,10 @@ interface TokenEvent @entity {
   token: Token!
   amount: BigDecimal!
   sender: Bytes!
+
+  block: BigInt!
+  timestamp: BigInt!
+  transaction: Bytes!
 }
 
 type BurnEvent implements TokenEvent @entity {
@@ -96,11 +100,11 @@ type BurnEvent implements TokenEvent @entity {
   " Block number "
   block: BigInt!
 
-  " Transaction hash "
-  transaction: Bytes!
-
   " Event timestamp "
   timestamp: BigInt!
+
+  " Transaction hash "
+  transaction: Bytes!
 }
 
 type MintEvent implements TokenEvent @entity {
@@ -124,11 +128,11 @@ type MintEvent implements TokenEvent @entity {
   " Block number "
   block: BigInt!
 
-  " Transaction hash "
-  transaction: Bytes!
-
   " Event timestamp "
   timestamp: BigInt!
+
+  " Transaction hash "
+  transaction: Bytes!
 }
 
 type TransferEvent implements TokenEvent @entity {
@@ -152,9 +156,9 @@ type TransferEvent implements TokenEvent @entity {
   " Block number "
   block: BigInt!
 
-  " Transaction hash "
-  transaction: Bytes!
-
   " Event timestamp "
   timestamp: BigInt!
+
+  " Transaction hash "
+  transaction: Bytes!
 }
