@@ -1,4 +1,4 @@
-import { BigInt, BigDecimal, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
+import { BigInt, BigDecimal, Bytes, EthereumEvent, log } from '@graphprotocol/graph-ts'
 
 import { Transfer } from '../../generated/TokenRegistry/templates/StandardToken/ERC20'
 import { Burn } from '../../generated/TokenRegistry/templates/BurnableToken/Burnable'
@@ -129,8 +129,8 @@ function createBurnEvent(event: EthereumEvent, amount: BigDecimal, burner: Bytes
   eventEntity.burner = burner
 
   eventEntity.block = event.block.number
-  eventEntity.transaction = event.transaction.hash
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.transaction = event.transaction.hash
 
   return eventEntity
 }
@@ -144,8 +144,8 @@ function createMintEvent(event: EthereumEvent, amount: BigDecimal, destination: 
   eventEntity.minter = event.transaction.from
 
   eventEntity.block = event.block.number
-  eventEntity.transaction = event.transaction.hash
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.transaction = event.transaction.hash
 
   return eventEntity
 }
@@ -164,8 +164,8 @@ function createTransferEvent(
   eventEntity.destination = destination
 
   eventEntity.block = event.block.number
-  eventEntity.transaction = event.transaction.hash
   eventEntity.timestamp = event.block.timestamp
+  eventEntity.transaction = event.transaction.hash
 
   return eventEntity
 }
