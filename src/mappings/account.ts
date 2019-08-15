@@ -1,35 +1,22 @@
 import { BigDecimal, BigInt, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
 
-import { Account, AccountBalance, AccountBalanceLog, Token } from '../../generated/schema'
-
-export function createAccountBalance(balance: AccountBalance, event: EthereumEvent): AccountBalanceLog {
-  let logEntity = new AccountBalanceLog(event.transaction.hash.toHex() + '-' + event.logIndex.toString())
-  logEntity.account = balance.account
-  logEntity.token = balance.token
-  logEntity.amount = balance.amount
-
-  logEntity.block = event.block.number
-  logEntity.transaction = event.transaction.hash
-  logEntity.timestamp = event.block.timestamp
-
-  return logEntity
-}
+import { Account, AccountBalance, AccountBalanceSnapshot, Token } from '../../generated/schema'
 
 export function getOrCreateAccount(accountAddress: Bytes): Account {
   let accountId = accountAddress.toHex()
-  let existingEntity = Account.load(accountId)
+  let existingAccount = Account.load(accountId)
 
-  if (existingEntity != null) {
-    return existingEntity as Account
+  if (existingAccount != null) {
+    return existingAccount as Account
   }
 
-  let newEntity = new Account(accountId)
-  newEntity.address = accountAddress
+  let newAccount = new Account(accountId)
+  newAccount.address = accountAddress
 
-  return newEntity
+  return newAccount
 }
 
-export function getOrCreateAccountBalance(account: Account, token: Token): AccountBalance {
+function getOrCreateAccountBalance(account: Account, token: Token): AccountBalance {
   let balanceId = account.id + '-' + token.id
   let previousBalance = AccountBalance.load(balanceId)
 
@@ -57,4 +44,19 @@ export function decreaseAccountBalance(account: Account, token: Token, amount: B
   balance.amount = balance.amount.minus(amount)
 
   return balance
+}
+
+export function saveAccountBalanceSnapshot(balance: AccountBalance, eventId: string, event: EthereumEvent): void {
+  let snapshot = new AccountBalanceSnapshot(balance.id + '-' + event.block.timestamp.toString())
+  snapshot.account = balance.account
+  snapshot.token = balance.token
+  snapshot.amount = balance.amount
+
+  snapshot.block = event.block.number
+  snapshot.transaction = event.transaction.hash
+  snapshot.timestamp = event.block.timestamp
+
+  snapshot.event = eventId
+
+  snapshot.save()
 }
