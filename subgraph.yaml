@@ -2,6 +2,11 @@ specVersion: 0.0.1
 schema:
   file: ./schema.graphql
 dataSources:
+  # This approach uses a particular event emitted once very early to trigger token registry
+  # initialization. It is not so important what the event is but rather that it was emitted before
+  # any other event of an ERC20 token. We even don't know what contract it is. Besides that, the ABI
+  # file for that contract was inferred since no contract information or source code is available
+  # out there.
   - name: TokenRegistry
     kind: ethereum/contract
     network: mainnet
@@ -23,6 +28,7 @@ dataSources:
           topic0: '0xa9e319c3b10db96c5cee4bc3ebffa9c5581f222f14a4deb0df7ec2088ccd0974'
           handler: initRegistry
     templates:
+      # These data sources templates exist to support the different flags that a token could specify
       - name: StandardToken
         kind: ethereum/contract
         network: mainnet
