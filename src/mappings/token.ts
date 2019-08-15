@@ -1,12 +1,17 @@
-import { BigInt, BigDecimal, Bytes, EthereumEvent, log } from '@graphprotocol/graph-ts'
+import { BigInt, BigDecimal, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
 
 import { Transfer } from '../../generated/TokenRegistry/templates/StandardToken/ERC20'
 import { Burn } from '../../generated/TokenRegistry/templates/BurnableToken/Burnable'
 import { Mint } from '../../generated/TokenRegistry/templates/MintableToken/Mintable'
 
-import { Account, BurnEvent, MintEvent, Token, TransferEvent } from '../../generated/schema'
+import { BurnEvent, MintEvent, Token, TransferEvent } from '../../generated/schema'
 
-import { getOrCreateAccount, decreaseAccountBalance, increaseAccountBalance, createAccountBalance } from './account'
+import {
+  decreaseAccountBalance,
+  getOrCreateAccount,
+  increaseAccountBalance,
+  saveAccountBalanceSnapshot
+} from './account'
 
 const GENESIS_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -43,30 +48,32 @@ export function handleTransfer(event: Transfer): void {
     // Updates balances of accounts
     if (isTransfer || isBurn) {
       let sourceAccount = getOrCreateAccount(event.params.from)
+
       let accountBalance = decreaseAccountBalance(sourceAccount, token as Token, amount)
+      accountBalance.block = event.block.number
+      accountBalance.modified = event.block.timestamp
+      accountBalance.transaction = event.transaction.hash
 
       sourceAccount.save()
       accountBalance.save()
 
-      // To provide information about evolution of account balance
-      let accountBalanceLog = createAccountBalance(accountBalance, event)
-      accountBalanceLog.event = eventEntityId
-
-      accountBalanceLog.save()
+      // To provide information about evolution of account balances
+      saveAccountBalanceSnapshot(accountBalance, eventEntityId, event)
     }
 
     if (isTransfer || isMint) {
       let destinationAccount = getOrCreateAccount(event.params.to)
+
       let accountBalance = increaseAccountBalance(destinationAccount, token as Token, amount)
+      accountBalance.block = event.block.number
+      accountBalance.modified = event.block.timestamp
+      accountBalance.transaction = event.transaction.hash
 
       destinationAccount.save()
       accountBalance.save()
 
-      // To provide information about evolution of account balance
-      let accountBalanceLog = createAccountBalance(accountBalance, event)
-      accountBalanceLog.event = eventEntityId
-
-      accountBalanceLog.save()
+      // To provide information about evolution of account balances
+      saveAccountBalanceSnapshot(accountBalance, eventEntityId, event)
     }
   }
 }
@@ -83,16 +90,17 @@ export function handleBurn(event: Burn): void {
 
     // Update source account balance
     let account = getOrCreateAccount(event.params.burner)
-    account.save()
 
     let accountBalance = decreaseAccountBalance(account, token as Token, amount)
+    accountBalance.block = event.block.number
+    accountBalance.modified = event.block.timestamp
+    accountBalance.transaction = event.transaction.hash
+
+    account.save()
     accountBalance.save()
 
-    // To provide information about evolution of account balance
-    let accountBalanceLog = createAccountBalance(accountBalance, event)
-    accountBalanceLog.event = eventEntity.id
-
-    accountBalanceLog.save()
+    // To provide information about evolution of account balances
+    saveAccountBalanceSnapshot(accountBalance, eventEntity.id, event)
   }
 }
 
@@ -107,17 +115,18 @@ export function handleMint(event: Mint): void {
     eventEntity.save()
 
     // Update destination account balance
-    let account: Account = getOrCreateAccount(event.params.to)
-    account.save()
+    let account = getOrCreateAccount(event.params.to)
 
     let accountBalance = increaseAccountBalance(account, token as Token, amount)
+    accountBalance.block = event.block.number
+    accountBalance.modified = event.block.timestamp
+    accountBalance.transaction = event.transaction.hash
+
+    account.save()
     accountBalance.save()
 
-    // To provide information about evolution of account balance
-    let accountBalanceLog = createAccountBalance(accountBalance, event)
-    accountBalanceLog.event = eventEntity.id
-
-    accountBalanceLog.save()
+    // To provide information about evolution of account balances
+    saveAccountBalanceSnapshot(accountBalance, eventEntity.id, event)
   }
 }
 

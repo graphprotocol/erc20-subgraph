@@ -1,33 +1,76 @@
 #
-# Main entities
+# Provides information about an Ethereum account
 #
-
 type Account @entity {
+  " Equals to: <accountAddress>"
   id: ID!
+
+  " Account address "
   address: Bytes!
+
+  " Token balances that this account holds "
+  balances: [AccountBalance!]! @derivedFrom(field: "account")
 }
 
+#
+# Current token balance of a particular Ethereum account
+#
 type AccountBalance @entity {
+  " Equals to: <accountAddress>-<tokenAddress>"
   id: ID!
+
+  " Account address "
   account: Account!
+
+  " Token address "
   token: Token!
+
+  " Current account balance "
   amount: BigDecimal!
+
+  " Block number in which the balance was last modified "
+  block: BigInt
+
+  " Last modified timestamp in seconds "
+  modified: BigInt
+
+  " Hash of the last transaction that modified the balance "
+  transaction: Bytes
 }
 
-# This entity is used to provide information about evolution of account balances
-type AccountBalanceLog @entity {
+#
+# Token balance of a particular Ethereum account in a certain timestamp. This entity is used to
+# provide information about evolution of account balances
+#
+type AccountBalanceSnapshot @entity {
+  " Equals to: <accountAddress>-<tokenAddress>-<timestamp>"
   id: ID!
+
+  " Account address "
   account: Account!
+
+  " Token addess "
   token: Token!
+
+  " Account balance "
   amount: BigDecimal!
 
+  # TODO: Add description and check if could be non-optional
   event: TokenEvent
 
+  " Block number "
   block: BigInt!
-  transaction: Bytes!
+
+  " Timestamp in seconds "
   timestamp: BigInt!
+
+  " Transaction hash "
+  transaction: Bytes!
 }
 
+#
+# Provides information about an ERC20 token
+#
 type Token @entity {
   id: ID!
 
@@ -68,10 +111,9 @@ type Token @entity {
 }
 
 #
-# Events
+# Token events
 #
-
-interface TokenEvent @entity {
+interface TokenEvent {
   id: ID!
   token: Token!
   amount: BigDecimal!
