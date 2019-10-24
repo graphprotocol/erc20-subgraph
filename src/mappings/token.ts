@@ -1,8 +1,8 @@
 import { BigInt, BigDecimal, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
 
-import { Transfer } from '../../generated/TokenRegistry/templates/StandardToken/ERC20'
-import { Burn } from '../../generated/TokenRegistry/templates/BurnableToken/Burnable'
-import { Mint } from '../../generated/TokenRegistry/templates/MintableToken/Mintable'
+import { Transfer } from '../../generated/templates/StandardToken/ERC20'
+import { Burn } from '../../generated/templates/BurnableToken/Burnable'
+import { Mint } from '../../generated/templates/MintableToken/Mintable'
 
 import { BurnEvent, MintEvent, Token, TransferEvent } from '../../generated/schema'
 

@@ -2,7 +2,7 @@ import { Address, JSONValue, Value, log, ipfs } from '@graphprotocol/graph-ts'
 
 import { Token } from '../../generated/schema'
 import { Unknown } from '../../generated/TokenRegistry/TokenRegistry'
-import { BurnableToken, MintableToken, StandardToken } from '../../generated/TokenRegistry/templates'
+import { BurnableToken, MintableToken, StandardToken } from '../../generated/templates'
 
 import { REGISTRY_HASH } from '../config'
 import { decodeFlags, DEFAULT_DECIMALS, isBurnable, isMintable } from '../helpers/tokens'

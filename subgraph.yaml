@@ -1,4 +1,4 @@
-specVersion: 0.0.1
+specVersion: 0.0.2
 schema:
   file: ./schema.graphql
 dataSources:
@@ -27,59 +27,59 @@ dataSources:
         - event: 'Unknown(indexed bytes,indexed bytes)'
           topic0: '0xa9e319c3b10db96c5cee4bc3ebffa9c5581f222f14a4deb0df7ec2088ccd0974'
           handler: initRegistry
-    templates:
-      # These data sources templates exist to support the different flags that a token could specify
-      - name: StandardToken
-        kind: ethereum/contract
-        network: mainnet
-        source:
-          abi: ERC20
-        mapping:
-          kind: ethereum/events
-          apiVersion: 0.0.3
-          language: wasm/assemblyscript
-          file: ./src/mappings/token.ts
-          entities:
-            - TransferEvent
-          abis:
-            - name: ERC20
-              file: ./abis/ERC20.json
-          eventHandlers:
-            - event: Transfer(indexed address,indexed address,uint256)
-              handler: handleTransfer
-      - name: BurnableToken
-        kind: ethereum/contract
-        network: mainnet
-        source:
-          abi: Burnable
-        mapping:
-          kind: ethereum/events
-          apiVersion: 0.0.3
-          language: wasm/assemblyscript
-          file: ./src/mappings/token.ts
-          entities:
-            - BurnEvent
-          abis:
-            - name: Burnable
-              file: ./abis/Burnable.json
-          eventHandlers:
-            - event: Burn(indexed address,uint256)
-              handler: handleBurn
-      - name: MintableToken
-        kind: ethereum/contract
-        network: mainnet
-        source:
-          abi: Mintable
-        mapping:
-          kind: ethereum/events
-          apiVersion: 0.0.3
-          language: wasm/assemblyscript
-          file: ./src/mappings/token.ts
-          entities:
-            - MintEvent
-          abis:
-            - name: Mintable
-              file: ./abis/Mintable.json
-          eventHandlers:
-            - event: Mint(indexed address,uint256)
-              handler: handleMint
+templates:
+  # These data sources templates exist to support the different flags that a token could specify
+  - name: StandardToken
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      file: ./src/mappings/token.ts
+      entities:
+        - TransferEvent
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+  - name: BurnableToken
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: Burnable
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      file: ./src/mappings/token.ts
+      entities:
+        - BurnEvent
+      abis:
+        - name: Burnable
+          file: ./abis/Burnable.json
+      eventHandlers:
+        - event: Burn(indexed address,uint256)
+          handler: handleBurn
+  - name: MintableToken
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: Mintable
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      file: ./src/mappings/token.ts
+      entities:
+        - MintEvent
+      abis:
+        - name: Mintable
+          file: ./abis/Mintable.json
+      eventHandlers:
+        - event: Mint(indexed address,uint256)
+          handler: handleMint
