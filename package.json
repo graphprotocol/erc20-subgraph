@@ -1,17 +1,17 @@
 {
-  "name": "token-subgraph",
+  "name": "erc20-subgraph",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ graphprotocol/token-subgraph",
-    "create-local": "graph create --node http://localhost:8020/ graphprotocol/token-subgraph",
-    "remove-local": "graph remove --node http://localhost:8020/ graphprotocol/token-subgraph",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 graphprotocol/token-subgraph"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ graphprotocol/erc20-subgraph",
+    "create-local": "graph create --node http://localhost:8020/ graphprotocol/erc20-subgraph",
+    "remove-local": "graph remove --node http://localhost:8020/ graphprotocol/erc20-subgraph",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 graphprotocol/erc20-subgraph"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "0.15.3",
-    "@graphprotocol/graph-ts": "0.15.1"
+    "@graphprotocol/graph-cli": "0.16.0",
+    "@graphprotocol/graph-ts": "0.16.0"
   }
 }
