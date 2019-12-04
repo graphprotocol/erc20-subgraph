@@ -5,7 +5,7 @@ import { Unknown } from '../../generated/TokenRegistry/TokenRegistry'
 import { BurnableToken, MintableToken, StandardToken } from '../../generated/templates'
 
 import { REGISTRY_HASH } from '../config'
-import { decodeFlags, DEFAULT_DECIMALS, isBurnable, isMintable } from '../helpers/tokens'
+import { decodeFlags, DEFAULT_DECIMALS, isBurnable, isMintable } from '../helpers/token'
 
 export function initRegistry(event: Unknown): void {
   log.debug('Initializing token registry, block={}', [event.block.number.toString()])

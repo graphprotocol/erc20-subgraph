@@ -1,6 +1,8 @@
-import { BigDecimal, BigInt, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
+import { BigDecimal, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
 
 import { Account, AccountBalance, AccountBalanceSnapshot, Token } from '../../generated/schema'
+
+import { ZERO } from '../helpers/decimal'
 
 export function getOrCreateAccount(accountAddress: Bytes): Account {
   let accountId = accountAddress.toHex()
@@ -27,7 +29,7 @@ function getOrCreateAccountBalance(account: Account, token: Token): AccountBalan
   let newBalance = new AccountBalance(balanceId)
   newBalance.account = account.id
   newBalance.token = token.id
-  newBalance.amount = BigInt.fromI32(0).toBigDecimal()
+  newBalance.amount = ZERO
 
   return newBalance
 }

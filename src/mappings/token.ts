@@ -1,4 +1,4 @@
-import { BigInt, BigDecimal, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
+import { BigDecimal, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
 
 import { Transfer } from '../../generated/templates/StandardToken/ERC20'
 import { Burn } from '../../generated/templates/BurnableToken/Burnable'
@@ -6,11 +6,13 @@ import { Mint } from '../../generated/templates/MintableToken/Mintable'
 
 import { BurnEvent, MintEvent, Token, TransferEvent } from '../../generated/schema'
 
+import { toDecimal } from '../helpers/decimal'
+
 import {
   decreaseAccountBalance,
   getOrCreateAccount,
   increaseAccountBalance,
-  saveAccountBalanceSnapshot
+  saveAccountBalanceSnapshot,
 } from './account'
 
 const GENESIS_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -163,7 +165,7 @@ function createTransferEvent(
   event: EthereumEvent,
   amount: BigDecimal,
   source: Bytes,
-  destination: Bytes
+  destination: Bytes,
 ): TransferEvent {
   let eventEntity = new TransferEvent(event.transaction.hash.toHex() + '-' + event.logIndex.toString())
   eventEntity.token = event.address.toHex()
@@ -177,12 +179,4 @@ function createTransferEvent(
   eventEntity.transaction = event.transaction.hash
 
   return eventEntity
-}
-
-function toDecimal(value: BigInt, decimals: u32): BigDecimal {
-  let precision = BigInt.fromI32(10)
-    .pow(<u8>decimals)
-    .toBigDecimal()
-
-  return value.divDecimal(precision)
 }
