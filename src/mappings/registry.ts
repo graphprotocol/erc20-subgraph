@@ -53,11 +53,11 @@ export function createToken(value: JSONValue, userData: Value): void {
       // Start indexing token events
       StandardToken.create(contractAddress)
 
-      if (isBurnable(flags)) {
+      if (hasBurnEvent(flags)) {
         BurnableToken.create(contractAddress)
       }
 
-      if (isMintable(flags)) {
+      if (hasMintEvent(flags)) {
         MintableToken.create(contractAddress)
       }
     } else {

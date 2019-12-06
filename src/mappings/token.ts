@@ -23,9 +23,9 @@ export function handleTransfer(event: Transfer): void {
   if (token != null) {
     let amount = toDecimal(event.params.value, token.decimals)
 
-    let isBurn = event.params.to.toHex() == GENESIS_ADDRESS
-    let isMint = event.params.from.toHex() == GENESIS_ADDRESS
-    let isTransfer = !(isBurn || isMint)
+    let isBurn = token.flags.includes('burnable-transfer') && event.params.to.toHex() == GENESIS_ADDRESS
+    let isMint = token.flags.includes('mintable-transfer') && event.params.from.toHex() == GENESIS_ADDRESS
+    let isTransfer = !isBurn && !isMint
 
     // Update token event logs
     let eventEntityId: string
