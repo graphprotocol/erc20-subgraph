@@ -1,11 +1,14 @@
 import { Address, JSONValue, Value, log, ipfs } from '@graphprotocol/graph-ts'
 
 import { Token } from '../../generated/schema'
+import { ERC20 } from '../../generated/TokenRegistry/ERC20'
 import { Unknown } from '../../generated/TokenRegistry/TokenRegistry'
+
 import { BurnableToken, MintableToken, StandardToken } from '../../generated/templates'
 
 import { REGISTRY_HASH } from '../config'
-import { decodeFlags, DEFAULT_DECIMALS, isBurnable, isMintable } from '../helpers/token'
+import { toDecimal, ZERO } from '../helpers/decimal'
+import { decodeFlags, DEFAULT_DECIMALS, hasBurnEvent, hasMintEvent } from '../helpers/token'
 
 export function initRegistry(event: Unknown): void {
   log.debug('Initializing token registry, block={}', [event.block.number.toString()])
@@ -31,6 +34,8 @@ export function createToken(value: JSONValue, userData: Value): void {
     let token = Token.load(contractAddress.toHex())
 
     if (token == null) {
+      let initialSupply = ERC20.bind(contractAddress).try_totalSupply()
+
       token = new Token(contractAddress.toHex())
       token.address = contractAddress
       token.name = name
@@ -40,12 +45,17 @@ export function createToken(value: JSONValue, userData: Value): void {
       token.imageUrl = imageUrl
       token.flags = decodeFlags(flags)
 
+      token.totalSupply = initialSupply.reverted ? ZERO : toDecimal(initialSupply.value, token.decimals)
+      token.totalBurned = ZERO
+      token.totalMinted = ZERO
+      token.totalTransferred = ZERO
+
       log.debug('Adding token to registry, name: {}, symbol: {}, address: {}, decimals: {}, flags: {}', [
         token.name,
         token.symbol,
         token.id,
         decimals.toString(), // TODO: use token.decimals.toString() when type 'i32' implements toString()
-        token.flags.length ? token.flags.join('|') : 'none'
+        token.flags.length ? token.flags.join('|') : 'none',
       ])
 
       token.save()

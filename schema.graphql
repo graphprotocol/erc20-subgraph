@@ -98,15 +98,19 @@ type Token @entity {
   # TODO: Number of token holders
   # holderCount: BigInt!
 
-  # TODO: Total token supply
-  # totalSupply: BigDecimal!
+  " Total token supply "
+  totalSupply: BigDecimal!
 
-  # TODO:
-  # totalMinted: BigDecimal
+  " Total token burned "
+  totalBurned: BigDecimal!
 
-  # TODO:
-  # totalBurned: BigDecimal
+  " Total token minted "
+  totalMinted: BigDecimal!
 
+  " Total token transferred "
+  totalTransferred: BigDecimal!
+
+  " List of token events "
   events: [TokenEvent!]! @derivedFrom(field: "token")
 }
 

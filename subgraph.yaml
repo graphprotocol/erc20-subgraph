@@ -24,6 +24,8 @@ dataSources:
       abis:
         - name: TokenRegistry
           file: ./abis/TokenRegistry.json
+        - name: ERC20
+          file: ./abis/ERC20.json
       eventHandlers:
         - event: 'Unknown(indexed bytes,indexed bytes)'
           topic0: '0xa9e319c3b10db96c5cee4bc3ebffa9c5581f222f14a4deb0df7ec2088ccd0974'
