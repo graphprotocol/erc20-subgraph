@@ -6,7 +6,7 @@ import { Mint } from '../../generated/templates/MintableToken/Mintable'
 
 import { BurnEvent, MintEvent, Token, TransferEvent } from '../../generated/schema'
 
-import { toDecimal } from '../helpers/decimal'
+import { toDecimal, ONE } from '../helpers/number'
 
 import {
   decreaseAccountBalance,
@@ -142,6 +142,8 @@ function handleBurnEvent(token: Token | null, amount: BigDecimal, burner: Bytes,
 
   // Track total supply/burned
   if (token != null) {
+    token.eventCount = token.eventCount.plus(ONE)
+    token.burnEventCount = token.burnEventCount.plus(ONE)
     token.totalSupply = token.totalSupply.minus(amount)
     token.totalBurned = token.totalBurned.plus(amount)
     token.save()
@@ -166,6 +168,8 @@ function handleMintEvent(token: Token | null, amount: BigDecimal, destination: B
 
   // Track total token supply/minted
   if (token != null) {
+    token.eventCount = token.eventCount.plus(ONE)
+    token.mintEventCount = token.mintEventCount.plus(ONE)
     token.totalSupply = token.totalSupply.plus(amount)
     token.totalMinted = token.totalMinted.plus(amount)
 
@@ -197,6 +201,8 @@ function handleTransferEvent(
 
   // Track total token transferred
   if (token != null) {
+    token.eventCount = token.eventCount.plus(ONE)
+    token.transferEventCount = token.transferEventCount.plus(ONE)
     token.totalTransferred = token.totalTransferred.plus(amount)
 
     token.save()

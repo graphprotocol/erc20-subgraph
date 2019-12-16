@@ -7,8 +7,8 @@ import { Unknown } from '../../generated/TokenRegistry/TokenRegistry'
 import { BurnableToken, MintableToken, StandardToken } from '../../generated/templates'
 
 import { REGISTRY_HASH } from '../config'
-import { toDecimal, ZERO } from '../helpers/decimal'
-import { decodeFlags, DEFAULT_DECIMALS, hasBurnEvent, hasMintEvent } from '../helpers/token'
+import { toDecimal, ZERO } from '../helpers/number'
+import { decodeFlags, hasBurnEvent, hasMintEvent, DEFAULT_DECIMALS } from '../helpers/token'
 
 export function initRegistry(event: Unknown): void {
   log.debug('Initializing token registry, block={}', [event.block.number.toString()])
@@ -45,10 +45,15 @@ export function createToken(value: JSONValue, userData: Value): void {
       token.imageUrl = imageUrl
       token.flags = decodeFlags(flags)
 
-      token.totalSupply = initialSupply.reverted ? ZERO : toDecimal(initialSupply.value, token.decimals)
-      token.totalBurned = ZERO
-      token.totalMinted = ZERO
-      token.totalTransferred = ZERO
+      token.eventCount = ZERO
+      token.burnEventCount = ZERO
+      token.mintEventCount = ZERO
+      token.transferEventCount = ZERO
+
+      token.totalSupply = initialSupply.reverted ? ZERO.toBigDecimal() : toDecimal(initialSupply.value, token.decimals)
+      token.totalBurned = ZERO.toBigDecimal()
+      token.totalMinted = ZERO.toBigDecimal()
+      token.totalTransferred = ZERO.toBigDecimal()
 
       log.debug('Adding token to registry, name: {}, symbol: {}, address: {}, decimals: {}, flags: {}', [
         token.name,
