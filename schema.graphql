@@ -95,6 +95,9 @@ type Token @entity {
   " Token flags"
   flags: [String!]!
 
+  " If token transfers are paused "
+  paused: Boolean
+
   # TODO: Number of token holders
   # holderCount: BigInt!
 
@@ -210,6 +213,31 @@ type TransferEvent implements TokenEvent @entity {
 
   " Address of destination account "
   destination: Bytes!
+
+  " Block number "
+  block: BigInt!
+
+  " Event timestamp "
+  timestamp: BigInt!
+
+  " Transaction hash "
+  transaction: Bytes!
+}
+
+type PauseEvent implements TokenEvent @entity {
+  id: ID!
+
+  " Token address "
+  token: Token!
+
+  " Greater than zero if token is paused "
+  amount: BigDecimal!
+
+  " Transaction sender address "
+  sender: Bytes!
+
+  " Address of pauser account "
+  pauser: Bytes!
 
   " Block number "
   block: BigInt!

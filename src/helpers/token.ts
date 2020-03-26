@@ -7,6 +7,7 @@ const BURN_EVENT = 1 << 1
 const MINT_EVENT = 1 << 2
 const BURN_TRANSFER = 1 << 3
 const MINT_TRANSFER = 1 << 4
+const PAUSABLE_TOKEN = 1 << 5
 
 export function decodeFlags(value: u64): string[] {
   let flags: string[] = []
@@ -37,6 +38,10 @@ export function decodeFlags(value: u64): string[] {
     if (hasMintTransfer(value)) {
       flags.push('mintable-transfer')
     }
+  }
+
+  if(isPausable(value)) {
+    flags.push('pausable')
   }
 
   return flags
@@ -75,4 +80,9 @@ export function hasMintEvent(flags: u64): boolean {
 // If token contract emits Transfer event from genesis address when create/mint tokens
 export function hasMintTransfer(flags: u64): boolean {
   return (flags & MINT_TRANSFER) != 0
+}
+
+// If tokens supports pausable transfers
+export function isPausable(flags: u64): boolean {
+  return (flags & PAUSABLE_TOKEN) != 0
 }
