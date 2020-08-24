@@ -16,7 +16,7 @@ dataSources:
       startBlock: 75563
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
       file: ./src/mappings/registry.ts
       entities:
@@ -39,7 +39,7 @@ templates:
       abi: ERC20
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
       file: ./src/mappings/token.ts
       entities:
@@ -57,7 +57,7 @@ templates:
       abi: Burnable
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
       file: ./src/mappings/token.ts
       entities:
@@ -75,7 +75,7 @@ templates:
       abi: Mintable
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
       file: ./src/mappings/token.ts
       entities:
@@ -93,7 +93,7 @@ templates:
       abi: Pausable
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
       file: ./src/mappings/token.ts
       entities:

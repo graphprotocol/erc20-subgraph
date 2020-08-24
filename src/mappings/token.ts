@@ -1,4 +1,4 @@
-import { BigDecimal, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
+import { BigDecimal, Bytes, ethereum } from '@graphprotocol/graph-ts'
 
 import { Transfer } from '../../generated/templates/StandardToken/ERC20'
 import { Burn } from '../../generated/templates/BurnableToken/Burnable'
@@ -152,7 +152,7 @@ export function handleUnpaused(event: Unpaused): void {
   handlePauseEvent(token, false, event)
 }
 
-function handleBurnEvent(token: Token | null, amount: BigDecimal, burner: Bytes, event: EthereumEvent): BurnEvent {
+function handleBurnEvent(token: Token | null, amount: BigDecimal, burner: Bytes, event: ethereum.Event): BurnEvent {
   let burnEvent = new BurnEvent(event.transaction.hash.toHex() + '-' + event.logIndex.toString())
   burnEvent.token = event.address.toHex()
   burnEvent.amount = amount
@@ -177,7 +177,7 @@ function handleBurnEvent(token: Token | null, amount: BigDecimal, burner: Bytes,
   return burnEvent
 }
 
-function handleMintEvent(token: Token | null, amount: BigDecimal, destination: Bytes, event: EthereumEvent): MintEvent {
+function handleMintEvent(token: Token | null, amount: BigDecimal, destination: Bytes, event: ethereum.Event): MintEvent {
   let mintEvent = new MintEvent(event.transaction.hash.toHex() + '-' + event.logIndex.toString())
   mintEvent.token = event.address.toHex()
   mintEvent.amount = amount
@@ -209,7 +209,7 @@ function handleTransferEvent(
   amount: BigDecimal,
   source: Bytes,
   destination: Bytes,
-  event: EthereumEvent,
+  event: ethereum.Event,
 ): TransferEvent {
   let transferEvent = new TransferEvent(event.transaction.hash.toHex() + '-' + event.logIndex.toString())
   transferEvent.token = event.address.toHex()
@@ -236,7 +236,7 @@ function handleTransferEvent(
   return transferEvent
 }
 
-function handlePauseEvent(token: Token | null, paused: boolean, event: EthereumEvent): PauseEvent {
+function handlePauseEvent(token: Token | null, paused: boolean, event: ethereum.Event): PauseEvent {
   let pauseEvent = new PauseEvent(event.transaction.hash.toHex() + '-' + event.logIndex.toString())
   pauseEvent.token = event.address.toHex()
   pauseEvent.amount = paused ? ONE.toBigDecimal() : ZERO.toBigDecimal()

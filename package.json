@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "auth": "graph auth https://api.thegraph.com/deploy/",
     "codegen": "graph codegen",
     "build": "graph build",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ graphprotocol/erc20-subgraph",
@@ -11,7 +12,7 @@
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 graphprotocol/erc20-subgraph"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "0.17.1",
-    "@graphprotocol/graph-ts": "0.17.0"
+    "@graphprotocol/graph-cli": "0.18.0",
+    "@graphprotocol/graph-ts": "0.18.1"
   }
 }

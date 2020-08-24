@@ -1,4 +1,4 @@
-import { BigDecimal, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
+import { BigDecimal, Bytes, ethereum } from '@graphprotocol/graph-ts'
 
 import { Account, AccountBalance, AccountBalanceSnapshot, Token } from '../../generated/schema'
 
@@ -48,7 +48,7 @@ export function decreaseAccountBalance(account: Account, token: Token, amount: B
   return balance
 }
 
-export function saveAccountBalanceSnapshot(balance: AccountBalance, eventId: string, event: EthereumEvent): void {
+export function saveAccountBalanceSnapshot(balance: AccountBalance, eventId: string, event: ethereum.Event): void {
   let snapshot = new AccountBalanceSnapshot(balance.id + '-' + event.block.timestamp.toString())
   snapshot.account = balance.account
   snapshot.token = balance.token
