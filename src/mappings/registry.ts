@@ -10,22 +10,28 @@ import { REGISTRY_HASH } from '../config'
 import { toDecimal, ZERO } from '../helpers/number'
 import { decodeFlags, hasBurnEvent, hasMintEvent, DEFAULT_DECIMALS } from '../helpers/token'
 
-export function initRegistry(event: Unknown): void {
-  log.debug('Initializing token registry, block={}', [event.block.number.toString()])
+// export function initRegistry(event: Unknown): void {
+//   log.debug('Initializing token registry, block={}', [event.block.number.toString()])
 
-  ipfs.mapJSON(REGISTRY_HASH, 'createToken', Value.fromString(''))
+//   ipfs.mapJSON(REGISTRY_HASH, 'createToken', Value.fromString(''))
+// }
+
+export class IValue {
+    address: string
+    name: string
+    symbol: string
+    imageUrl: string
+    description: string | null
 }
+export function createToken(address: string, name: string, symbol: string, imageUrl: string): void {
 
-export function createToken(value: JSONValue, userData: Value): void {
-  let rawData = value.toArray()
-
-  let address: string | null = rawData[0].isNull() ? null : rawData[0].toString()
-  let name: string | null = rawData[1].isNull() ? null : rawData[1].toString()
-  let symbol: string | null = rawData[2].isNull() ? null : rawData[2].toString()
-  let decimals: u32 = rawData[3].isNull() ? DEFAULT_DECIMALS : rawData[3].toBigInt().toI32()
-  let description: string | null = rawData[4].isNull() ? null : rawData[4].toString()
-  let imageUrl: string | null = rawData[5].isNull() ? null : rawData[5].toString()
-  let flags: u16 = rawData[6].isNull() ? 0 : (rawData[6].toU64() as u16)
+  //let address: string | null = value.address
+  //let name: string | null = value.name
+  //let symbol: string | null = value.symbol
+  let decimals: u32 = DEFAULT_DECIMALS
+  let description: string | null = null
+  //let imageUrl: string | null = value.imageUrl
+  let flags: u16 =  0
 
   if (address != null) {
     let contractAddress = Address.fromString(address)

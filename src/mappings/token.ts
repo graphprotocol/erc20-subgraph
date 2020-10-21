@@ -1,4 +1,4 @@
-import { BigDecimal, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
+import { Address, log, BigDecimal, Bytes, EthereumEvent, Value, JSONValue, } from '@graphprotocol/graph-ts'
 
 import { Transfer } from '../../generated/templates/StandardToken/ERC20'
 import { Burn } from '../../generated/templates/BurnableToken/Burnable'
@@ -6,8 +6,12 @@ import { Mint } from '../../generated/templates/MintableToken/Mintable'
 import { Pause, Unpause, Paused, Unpaused } from '../../generated/templates/PausableToken/Pausable'
 
 import { Token, BurnEvent, MintEvent, TransferEvent, PauseEvent } from '../../generated/schema'
+import { ERC20 } from '../../generated/TokenRegistry/ERC20'
 
 import { toDecimal, ONE, ZERO } from '../helpers/number'
+import { decodeFlags, hasBurnEvent, hasMintEvent, DEFAULT_DECIMALS } from '../helpers/token'
+import { BurnableToken, MintableToken, StandardToken } from '../../generated/templates'
+import { createToken, IValue } from './registry'
 
 import {
   decreaseAccountBalance,
@@ -17,11 +21,46 @@ import {
 } from './account'
 
 const GENESIS_ADDRESS = '0x0000000000000000000000000000000000000000'
+const imageUrl = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x744d70FDBE2Ba4CF95131626614a1763DF805B9E/logo.png'
 
 export function handleTransfer(event: Transfer): void {
   let token = Token.load(event.address.toHex())
 
+    if (token == null) {
+        // createToken(
+        //     event.address.toHexString(),
+        //     'Status Network Token',
+        //     'SNT',
+        //     imageUrl
+        // )
+        // token = Token.load(event.address.toHex())
+        let contractAddress = Address.fromString(event.address.toHexString())
+        let initialSupply = ERC20.bind(contractAddress).try_totalSupply()
+        token = new Token(contractAddress.toHex())
+        token.address = contractAddress
+        token.name = 'Status Network Token'
+        token.symbol = 'SNT'
+        token.decimals = DEFAULT_DECIMALS
+        token.description = ''
+        token.imageUrl = "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x744d70FDBE2Ba4CF95131626614a1763DF805B9E/logo.png"
+        token.flags = decodeFlags(0)
+
+        token.eventCount = ZERO
+        token.burnEventCount = ZERO
+        token.mintEventCount = ZERO
+        token.transferEventCount = ZERO
+        token.totalSupply = initialSupply.reverted ? ZERO.toBigDecimal() : toDecimal(initialSupply.value, token.decimals)
+        token.totalBurned = ZERO.toBigDecimal()
+        token.totalMinted = ZERO.toBigDecimal()
+        token.totalTransferred = ZERO.toBigDecimal()
+        token.save()
+    }
+
   if (token != null) {
+      log.info(
+          'handleTransfer, token: {}',
+          [token.address.toString()]
+      )
     let amount = toDecimal(event.params.value, token.decimals)
 
     let isBurn = token.flags.includes('burnable-transfer') && event.params.to.toHex() == GENESIS_ADDRESS
@@ -29,7 +68,12 @@ export function handleTransfer(event: Transfer): void {
     let isTransfer = !isBurn && !isMint
 
     // Update token event logs
-    let eventEntityId: string
+      let eventEntityId: string
+
+      // log.info(
+      //     'isBurn: {}, isMint: {}, isTransafer: {}',
+      //     [isBurn ? 'true' : 'false', isMint ? 'true' : 'false', isTransfer ? 'true' : 'false']
+      // )
 
     if (isBurn) {
       let eventEntity = handleBurnEvent(token, amount, event.params.from, event)
