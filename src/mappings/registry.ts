@@ -4,7 +4,7 @@ import { Token } from '../../generated/schema'
 import { ERC20 } from '../../generated/TokenRegistry/ERC20'
 import { Unknown } from '../../generated/TokenRegistry/TokenRegistry'
 
-import { BurnableToken, MintableToken, StandardToken } from '../../generated/templates'
+import { BurnableToken, MintableToken, PausableToken, StandardToken } from '../../generated/templates'
 
 import { REGISTRY_HASH } from '../config'
 import { toDecimal, ZERO } from '../helpers/number'
@@ -74,6 +74,10 @@ export function createToken(value: JSONValue, userData: Value): void {
 
       if (hasMintEvent(flags)) {
         MintableToken.create(contractAddress)
+      }
+
+      if (isPausable(flags)) {
+        PausableToken.create(contractAddress)
       }
     } else {
       log.warning('Token {} already in registry', [contractAddress.toHex()])
